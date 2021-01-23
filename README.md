@@ -49,9 +49,8 @@ If everything succeeded without error, baka-mplayer.exe will be built under Baka
 Static Build
 ============
 If you want to build it staticly, you have to build a static version of mpv.
-NOTE
-----
-This is not recommanded because I can't build it with dxva2 and libbluray support, although the size will be smaller.
+
+
 Build Static Deps of Mpv
 ------------------------
 First install the deps of building mpv:
@@ -69,15 +68,12 @@ And then build these packages a static version by editing their PKGBUILDS.
 
 Most packages can build a static version by adding ```--enable-static``` or ```--enable-static --disable-static``` to the configure parameter, for some packages using cmake you have to add ```DLIBTYPE=STATIC```.
 
-Note that xvidcore is built as xvidcore.a, you have to ```ln -s /mingw64/lib/xvidcore.a /mingw64/lib/libxvidcore.a``` to let it be recognized by ld.
-
-Libbluray
----------
-There is something wrong with libbluray and libxml2, so we have to disable it
-
-Static Libguess
----------------
-I have not built a static mpv successfully because I can't build a static version of libguess. Anyone knows please tell me. You have to add ```disable-libguess``` to configure or just remove the package ```mingw-w64-x86_64-libguess```. 
+NOTE
+----
+```
+ln -s /mingw64/lib/xvidcore.a /mingw64/lib/libxvidcore.a
+ln -s /mingw64/bin/x86_64-w64-mingw32-gcc-ar.exe /mingw64/bin/x86_64-w64-mingw32-ar.exe
+```
 
 Install Qt5-static
 ------------------
@@ -95,24 +91,27 @@ Build Baka-MPlayer
 arch=x86_64
 ./bakamplayer-static.sh $arch
 ```
-I failed to build with log: http://paste.ubuntu.com/9804052/
-To solve this, you have to edit the file ```mpv.pc``` in ```/mingw64/lib/pkgconfig``` like this:
+
+Dynamic compile is very smooth, but static compile throws an exception.
+I have checked the Lib directory, libzip.a and libbz2.a already exist, but still throw exception, then I don't know how to handle it.
+
+Exception log:
 ```
-prefix=/mingw64
-exec_prefix=/mingw64
-libdir=/mingw64/bin
-includedir=/mingw64/include
-
-Name: mpv
-Description: mpv media player client library
-Version: 1.13.0
-Requires:
-Libs: -L${libdir} -lmpv -lass -llua -ldvdcss -lavcodec -ldvdnav -lmpg123 -lcaca -lxml2 -lfontconfig -lfreetype -lavdevice -lavfilter -lavformat -lavresample -lavutil -lenca -lm -lfribidi -lglib-2.0 -lintl -lxml2 -lbz2 -ldvdread -ldvdcss -lmingw32 -lSDLmain -lSDL -liconv -lswscale -lswresample -llcms2 -lz -lharfbuzz -lexpat -lgnutls
-Libs.private: -lenca -lgdi32 -lopengl32 -liconv -ljpeg -lm -lole32 -luuid -lole32 -lwinmm -lz 
-Cflags: -I${includedir}
+C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/10.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: C:/msys64/mingw64/lib\libzip.a(zip_algorithm_bzip2.c.obj):(.text+0x60): undefined reference to `BZ2_bzCompress'
+C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/10.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: C:/msys64/mingw64/lib\libzip.a(zip_algorithm_bzip2.c.obj):(.text+0xbd): undefined reference to `BZ2_bzDecompress'
+C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/10.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: C:/msys64/mingw64/lib\libzip.a(zip_algorithm_bzip2.c.obj):(.text+0x143): undefined reference to `BZ2_bzCompressEnd'
+C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/10.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: C:/msys64/mingw64/lib\libzip.a(zip_algorithm_bzip2.c.obj):(.text+0x161): undefined reference to `BZ2_bzDecompressEnd'
+C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/10.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: C:/msys64/mingw64/lib\libzip.a(zip_algorithm_bzip2.c.obj):(.text+0x1fc): undefined reference to `BZ2_bzCompressInit'
+C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/10.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: C:/msys64/mingw64/lib\libzip.a(zip_algorithm_bzip2.c.obj):(.text+0x21e): undefined reference to `BZ2_bzDecompressInit'
+C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/10.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: C:/msys64/mingw64/lib\libzip.a(zip_algorithm_xz.c.obj):(.text+0x50): undefined reference to `lzma_code'
+C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/10.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: C:/msys64/mingw64/lib\libzip.a(zip_algorithm_xz.c.obj):(.text+0xb9): undefined reference to `lzma_end'
+C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/10.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: C:/msys64/mingw64/lib\libzip.a(zip_algorithm_xz.c.obj):(.text+0xe9): undefined reference to `lzma_lzma_preset'
+C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/10.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: C:/msys64/mingw64/lib\libzip.a(zip_algorithm_xz.c.obj):(.text+0x153): undefined reference to `lzma_stream_decoder'
+C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/10.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: C:/msys64/mingw64/lib\libzip.a(zip_algorithm_xz.c.obj):(.text+0x17c): undefined reference to `lzma_stream_encoder'
+C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/10.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: C:/msys64/mingw64/lib\libzip.a(zip_algorithm_xz.c.obj):(.text+0x210): undefined reference to `lzma_alone_encoder'
+C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/10.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: C:/msys64/mingw64/lib\libzip.a(zip_algorithm_xz.c.obj):(.text+0x248): undefined reference to `lzma_alone_decoder'
+collect2.exe: error: ld returned 1 exit status
+mingw32-make[1]: *** [Makefile.Release:249: build/baka-mplayer.exe] Error 1
+mingw32-make[1]: Leaving directory 'C:/msys64/baka-build/Baka-MPlayer_static.x86_64'
+mingw32-make: *** [Makefile:45: release] Error 2
 ```
-
-
-
-
-
