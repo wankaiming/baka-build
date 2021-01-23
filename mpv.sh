@@ -17,18 +17,18 @@ PREFIX=/mingw32
 fi
 
 # get mpv
-git clone https://github.com/mpv-player/mpv.git mpv.$arch
+git clone https://hub.fastgit.org/mpv-player/mpv.git mpv.$arch
 cd mpv.$arch
 git pull
 
 
 # build mpv
-python3.3 bootstrap.py
-DEST_OS=win32 TARGET=$arch-w64-mingw32 PKG_CONFIG=/usr/bin/pkg-config CC=gcc PERL=$PREFIX/bin/perl AR=$PREFIX/bin/ar WINDRES=$PREFIX/bin/windres \
-python3.3 waf configure --check-c-compiler=gcc --prefix=$PREFIX \
---enable-libmpv-static --disable-client-api-examples --disable-libguess --disable-libbluray --enable-static-build
-python3.3 waf build
-python3.3 waf install
+python3 bootstrap.py
+DEST_OS=win32 TARGET=$arch-w64-mingw32 \
+python3 waf configure --check-c-compiler=gcc --prefix=$PREFIX \
+--enable-libmpv-static --disable-uchardet
+python3 waf build
+python3 waf install
 
 instroot=$PREFIX
 mv $instroot/bin/libmpv.a $instroot/lib
