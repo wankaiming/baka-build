@@ -134,7 +134,7 @@ $PREFIX/bin/libicudt68.dll  \
 $PREFIX/bin/libx265.dll  \
 $PREFIX/bin/libunistring-2.dll  Baka-MPlayer_$arch
 
-# 这里补充ldd 查找不到的qt依赖
+# 这里补充ldd 查找不到的qt依赖 （通过windeployqt查找）
 mkdir Baka-MPlayer_$arch/bearer
 mkdir Baka-MPlayer_$arch/iconengines
 mkdir Baka-MPlayer_$arch/imageformats
